@@ -1,0 +1,8 @@
+# Binaries
+
+Library/
+Logs/
+
+# Visual studio
+
+.vs/
