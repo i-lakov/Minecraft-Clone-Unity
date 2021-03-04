@@ -57,6 +57,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\BiomeAttributes.cs" />
      <Compile Include="Assets\Scripts\Chunk.cs" />
+     <Compile Include="Assets\Scripts\DebugScreen.cs" />
      <Compile Include="Assets\Scripts\Noise.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\VoxelData.cs" />
