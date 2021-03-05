@@ -68,7 +68,7 @@ public class World : MonoBehaviour
         player.position = spawnPosition;
     }
 
-    // Coroutine
+    // Coroutine to prevent lag spikes when loading chunks.
     IEnumerator CreateChunks ()
     {
         isCreatingChunks = true;
@@ -89,6 +89,14 @@ public class World : MonoBehaviour
         int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidth);
 
         return new ChunkCoord(x, z);
+    }
+
+    public Chunk GetChunkFromVertor3(Vector3 pos)
+    {
+        int x = Mathf.FloorToInt(pos.x / VoxelData.ChunkWidth);
+        int z = Mathf.FloorToInt(pos.z / VoxelData.ChunkWidth);
+
+        return chunks[x, z];
     }
 
     void CheckViewDistance()
