@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\DebugScreen.cs" />
      <Compile Include="Assets\Scripts\Noise.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\Toolbar.cs" />
      <Compile Include="Assets\Scripts\VoxelData.cs" />
      <Compile Include="Assets\Scripts\World.cs" />
  <Reference Include="UnityEngine">
@@ -627,6 +628,10 @@
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{9270C048-3734-A6FE-44D2-3C789E668D35}</Project>
       <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.2D.Sprite.Editor.csproj">
+      <Project>{4E16284D-EAB8-D900-D88A-DB4E25C05FF8}</Project>
+      <Name>Unity.2D.Sprite.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
