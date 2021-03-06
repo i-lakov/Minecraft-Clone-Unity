@@ -32,7 +32,6 @@ public class DebugScreen : MonoBehaviour
         debugText += $"Chunk: {(world.playerChunkCoord.x - halfWorldSizeInChunks)}, {(world.playerChunkCoord.z - halfWorldSizeInChunks)}\n\n";
         debugText += $"Biome: {world.biome}";
 
-
         text.text = debugText;
 
         if (timer > 1f)

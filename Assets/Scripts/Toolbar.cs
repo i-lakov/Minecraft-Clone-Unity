@@ -22,6 +22,8 @@ public class Toolbar : MonoBehaviour
             slot.icon.sprite = world.blocktypes[slot.itemID].icon;
             slot.icon.enabled = true;
         }
+
+        player.selectedBlockIndex = itemSlots[slotIndex].itemID;
     }
 
     private void Update()

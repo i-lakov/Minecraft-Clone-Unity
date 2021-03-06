@@ -1073,9 +1073,11 @@ MonoBehaviour:
   player: {fileID: 1309378894}
   spawnPosition: {x: 0, y: 0, z: 0}
   material: {fileID: 2100000, guid: 2cdea7bc0dc1b7f4c98e82ea591e05c0, type: 2}
+  transparentMaterial: {fileID: 2100000, guid: 6e49ab31b02be6d43bc9281a16287524, type: 2}
   blocktypes:
   - blockName: Air
     isSolid: 0
+    isTransparent: 1
     icon: {fileID: 0}
     backFaceTexture: 0
     frontFaceTexture: 0
@@ -1085,7 +1087,8 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Bedrock
     isSolid: 1
-    icon: {fileID: -4219558403781695398, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
+    isTransparent: 0
+    icon: {fileID: 6181873364862223445, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 9
     frontFaceTexture: 9
     topFaceTexture: 9
@@ -1094,6 +1097,7 @@ MonoBehaviour:
     rightFaceTexture: 9
   - blockName: Stone
     isSolid: 1
+    isTransparent: 0
     icon: {fileID: 5679390536090785944, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 0
     frontFaceTexture: 0
@@ -1103,6 +1107,7 @@ MonoBehaviour:
     rightFaceTexture: 0
   - blockName: Grass
     isSolid: 1
+    isTransparent: 0
     icon: {fileID: 5392753449730437660, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 2
     frontFaceTexture: 2
@@ -1112,7 +1117,8 @@ MonoBehaviour:
     rightFaceTexture: 2
   - blockName: Sand
     isSolid: 1
-    icon: {fileID: 6181873364862223445, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
+    isTransparent: 0
+    icon: {fileID: -9138616440249935319, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 10
     frontFaceTexture: 10
     topFaceTexture: 10
@@ -1121,6 +1127,7 @@ MonoBehaviour:
     rightFaceTexture: 10
   - blockName: Dirt
     isSolid: 1
+    isTransparent: 0
     icon: {fileID: -6943373833598557, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 1
     frontFaceTexture: 1
@@ -1130,7 +1137,8 @@ MonoBehaviour:
     rightFaceTexture: 1
   - blockName: Log
     isSolid: 1
-    icon: {fileID: -7538633921802359561, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
+    isTransparent: 0
+    icon: {fileID: 448961105294916356, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 5
     frontFaceTexture: 5
     topFaceTexture: 6
@@ -1139,7 +1147,8 @@ MonoBehaviour:
     rightFaceTexture: 5
   - blockName: Plank
     isSolid: 1
-    icon: {fileID: -9138616440249935319, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
+    isTransparent: 0
+    icon: {fileID: -1501523072523359806, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 4
     frontFaceTexture: 4
     topFaceTexture: 4
@@ -1148,7 +1157,8 @@ MonoBehaviour:
     rightFaceTexture: 4
   - blockName: Brick
     isSolid: 1
-    icon: {fileID: 448961105294916356, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
+    isTransparent: 0
+    icon: {fileID: -4219558403781695398, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 11
     frontFaceTexture: 11
     topFaceTexture: 11
@@ -1157,13 +1167,24 @@ MonoBehaviour:
     rightFaceTexture: 11
   - blockName: Cobblestone
     isSolid: 1
-    icon: {fileID: -1501523072523359806, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
+    isTransparent: 0
+    icon: {fileID: 1159639000735656762, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
     backFaceTexture: 8
     frontFaceTexture: 8
     topFaceTexture: 8
     bottomFaceTexture: 8
     leftFaceTexture: 8
     rightFaceTexture: 8
+  - blockName: Glass
+    isSolid: 1
+    isTransparent: 1
+    icon: {fileID: -7538633921802359561, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
+    backFaceTexture: 3
+    frontFaceTexture: 3
+    topFaceTexture: 3
+    bottomFaceTexture: 3
+    leftFaceTexture: 3
+    rightFaceTexture: 3
   debugScreen: {fileID: 836563639}
 --- !u!4 &1199084089
 Transform:
@@ -2325,7 +2346,7 @@ MonoBehaviour:
   player: {fileID: 1309378895}
   highlight: {fileID: 1482069173}
   itemSlots:
-  - itemID: 1
+  - itemID: 10
     icon: {fileID: 2914642353785949388}
   - itemID: 2
     icon: {fileID: 872299282}
