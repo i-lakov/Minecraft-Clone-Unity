@@ -110,12 +110,12 @@ public class World : MonoBehaviour
         bool updated = false;
         int index = 0;
 
-        while(!updated && index < (chunksToCreate.Count - 1))
+        while(!updated && index < (chunksToUpdate.Count - 1))
         {
             if (chunksToUpdate[index].isEditable)
             {
                 chunksToUpdate[index].UpdateChunk();
-                chunksToUpdate.RemoveAt(index);
+                chunksToUpdate.RemoveAt(index); 
                 updated = true;
             }
             else index++;
@@ -212,10 +212,15 @@ public class World : MonoBehaviour
     {
         ChunkCoord curChunk = new ChunkCoord(pos);
 
-        if (!IsChunkInWorld(curChunk) || pos.y < 0 || pos.y > VoxelData.ChunkHeight) return false;
+        if (!IsChunkInWorld(curChunk) || pos.y < 0 || pos.y > VoxelData.ChunkHeight)
+        {
+            return false;
+        }
 
         if (chunks[curChunk.x, curChunk.z] != null && chunks[curChunk.x, curChunk.z].isEditable)
+        {
             return blocktypes[chunks[curChunk.x, curChunk.z].GetVoxelFromGlobalVector3(pos)].isSolid;
+        }
 
         return blocktypes[GetVoxel(pos)].isSolid;
     }
@@ -224,7 +229,10 @@ public class World : MonoBehaviour
     {
         ChunkCoord curChunk = new ChunkCoord(pos);
 
-        if (!IsChunkInWorld(curChunk) || pos.y < 0 || pos.y > VoxelData.ChunkHeight) return false;
+        if (!IsChunkInWorld(curChunk) || pos.y < 0 || pos.y > VoxelData.ChunkHeight)
+        {
+            return false;
+        }
 
         if (chunks[curChunk.x, curChunk.z] != null && chunks[curChunk.x, curChunk.z].isEditable)
             return blocktypes[chunks[curChunk.x, curChunk.z].GetVoxelFromGlobalVector3(pos)].isTransparent;
