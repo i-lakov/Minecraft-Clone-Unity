@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    #region Data members
     private Transform cam;
     private World world;
 
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
     public float reach = 8f;
 
     public byte selectedBlockIndex = 1;
+    #endregion
 
     private void Start()
     {

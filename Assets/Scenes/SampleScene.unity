@@ -1185,6 +1185,16 @@ MonoBehaviour:
     bottomFaceTexture: 3
     leftFaceTexture: 3
     rightFaceTexture: 3
+  - blockName: Leaves
+    isSolid: 1
+    isTransparent: 1
+    icon: {fileID: -7538633921802359561, guid: e1cd7fda4da7c0d4b8470e4f6dbe89fc, type: 3}
+    backFaceTexture: 16
+    frontFaceTexture: 16
+    topFaceTexture: 16
+    bottomFaceTexture: 16
+    leftFaceTexture: 16
+    rightFaceTexture: 16
   debugScreen: {fileID: 836563639}
 --- !u!4 &1199084089
 Transform:
@@ -2171,7 +2181,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 123eefba972a4614b87d6cd797f54463, type: 2}
+  - {fileID: 2100000, guid: adc887fc9c6cc7e42b4bd6263f98bf75, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

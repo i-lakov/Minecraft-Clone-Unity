@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
+    #region Data members
     public int seed;
     public BiomeAttributes biome;
 
@@ -21,9 +22,15 @@ public class World : MonoBehaviour
     ChunkCoord playerLastChunkCoord;
 
     List<ChunkCoord> chunksToCreate = new List<ChunkCoord>();
-    private bool isCreatingChunks;
+    public Queue<Chunk> chunksToDraw = new Queue<Chunk>();
+
+    bool applyingModifiations = false;
+
+    Queue<Queue<VoxelMod>> modifications = new Queue<Queue<VoxelMod>>();
+    List<Chunk> chunksToUpdate = new List<Chunk>();
 
     public GameObject debugScreen;
+    #endregion
 
     private void Start()
     {
@@ -44,9 +51,30 @@ public class World : MonoBehaviour
             CheckViewDistance();
         }
 
-        if(chunksToCreate.Count > 0 && !isCreatingChunks)
+        if(!applyingModifiations)
         {
-            StartCoroutine("CreateChunks");
+            ApplyModifications();
+        }
+
+        if(chunksToCreate.Count > 0)
+        {
+            CreateChunk();
+        }
+
+        if(chunksToUpdate.Count > 0)
+        {
+            UpdateChunks();
+        }
+
+        if(chunksToDraw.Count > 0)
+        {
+            lock(chunksToDraw)
+            {
+                if(chunksToDraw.Peek().isEditable)
+                {
+                    chunksToDraw.Dequeue().CreateMesh();
+                }
+            }
         }
 
         if(Input.GetKeyDown(KeyCode.F3))
@@ -69,19 +97,60 @@ public class World : MonoBehaviour
         player.position = spawnPosition;
     }
 
-    // Coroutine to prevent lag spikes when loading chunks.
-    IEnumerator CreateChunks ()
+    void CreateChunk()
     {
-        isCreatingChunks = true;
+        ChunkCoord c = chunksToCreate[0];
+        chunksToCreate.RemoveAt(0);
+        activeChunks.Add(c);
+        chunks[c.x, c.z].Initialize();
+    }
 
-        while(chunksToCreate.Count > 0)
+    void UpdateChunks()
+    {
+        bool updated = false;
+        int index = 0;
+
+        while(!updated && index < (chunksToCreate.Count - 1))
         {
-            chunks[chunksToCreate[0].x, chunksToCreate[0].z].Initialize();
-            chunksToCreate.RemoveAt(0);
-            yield return null;
+            if (chunksToUpdate[index].isEditable)
+            {
+                chunksToUpdate[index].UpdateChunk();
+                chunksToUpdate.RemoveAt(index);
+                updated = true;
+            }
+            else index++;
+        }
+    }
+
+    void ApplyModifications()
+    {
+        applyingModifiations = true;
+
+        while(modifications.Count > 0)
+        {
+            Queue<VoxelMod> queue = modifications.Dequeue();
+
+            while (queue.Count > 0)
+            {
+                VoxelMod vm = queue.Dequeue();
+                ChunkCoord c = GetChunkCoordFromVector3(vm.position);
+
+                if (chunks[c.x, c.z] == null)
+                {
+                    chunks[c.x, c.z] = new Chunk(c, this, true);
+                    activeChunks.Add(c);
+                }
+
+                chunks[c.x, c.z].modifications.Enqueue(vm);
+
+                if (!chunksToUpdate.Contains(chunks[c.x, c.z]))
+                {
+                    chunksToUpdate.Add(chunks[c.x, c.z]);
+                }
+            }
         }
 
-        isCreatingChunks = false;
+        applyingModifiations = false;
     }
 
     ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
@@ -145,7 +214,7 @@ public class World : MonoBehaviour
 
         if (!IsChunkInWorld(curChunk) || pos.y < 0 || pos.y > VoxelData.ChunkHeight) return false;
 
-        if (chunks[curChunk.x, curChunk.z] != null && chunks[curChunk.x, curChunk.z].isVoxelMapPopulated)
+        if (chunks[curChunk.x, curChunk.z] != null && chunks[curChunk.x, curChunk.z].isEditable)
             return blocktypes[chunks[curChunk.x, curChunk.z].GetVoxelFromGlobalVector3(pos)].isSolid;
 
         return blocktypes[GetVoxel(pos)].isSolid;
@@ -157,7 +226,7 @@ public class World : MonoBehaviour
 
         if (!IsChunkInWorld(curChunk) || pos.y < 0 || pos.y > VoxelData.ChunkHeight) return false;
 
-        if (chunks[curChunk.x, curChunk.z] != null && chunks[curChunk.x, curChunk.z].isVoxelMapPopulated)
+        if (chunks[curChunk.x, curChunk.z] != null && chunks[curChunk.x, curChunk.z].isEditable)
             return blocktypes[chunks[curChunk.x, curChunk.z].GetVoxelFromGlobalVector3(pos)].isTransparent;
 
         return blocktypes[GetVoxel(pos)].isTransparent;
@@ -177,7 +246,7 @@ public class World : MonoBehaviour
         if (yPos == 0) 
             return 1;
 
-        // -- BASIC TERRAIN --
+        // -- BASIC TERRAIN PASS --
 
         int terrainHeight = Mathf.FloorToInt(biome.terrainHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale) + biome.solidGroundHeight);
         byte voxelValue = 0;
@@ -206,6 +275,20 @@ public class World : MonoBehaviour
                 }
             }
         }
+
+        // -- TREE PASS --
+
+        if(yPos == terrainHeight)
+        {
+            if(Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.treeZoneScale) > biome.treeZoneTreshold)
+            {
+                if(Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 100, biome.treePlacementScale) > biome.treePlacementThreshold)
+                {
+                    modifications.Enqueue(Structure.MakeTree(pos, biome.minTreeHeight, biome.maxTreeHeight));
+                }
+            }
+        }
+
         return voxelValue;
     }
 
@@ -233,6 +316,7 @@ public class World : MonoBehaviour
 [System.Serializable]
 public class BlockType
 {
+    #region Data members
     public string blockName;
     public bool isSolid;
     public bool isTransparent;
@@ -245,6 +329,7 @@ public class BlockType
     public int bottomFaceTexture;
     public int leftFaceTexture;
     public int rightFaceTexture;
+    #endregion
 
     // Back, Front, Top, Bottom, Left, Right
     public int GetTextureID(int faceIndex)
@@ -268,4 +353,32 @@ public class BlockType
                 return 0;
         }
     }
+}
+
+public class VoxelMod
+{
+    public Vector3 position;
+    public byte id;
+
+    #region Constructors
+    /// <summary>
+    /// Default constructor.
+    /// </summary>
+    public VoxelMod()
+    {
+        position = new Vector3();
+        id = 0;
+    }
+
+    /// <summary>
+    /// General purpose constructor.
+    /// </summary>
+    /// <param name="_position"></param>
+    /// <param name="_id"></param>
+    public VoxelMod(Vector3 _position, byte _id)
+    {
+        position = _position;
+        id = _id;
+    }
+    #endregion
 }

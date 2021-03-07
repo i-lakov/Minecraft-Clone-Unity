@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Toolbar : MonoBehaviour
 {
+    #region Data members
     World world;
     public Player player;
 
@@ -12,6 +13,7 @@ public class Toolbar : MonoBehaviour
     public ItemSlot[] itemSlots;
 
     int slotIndex = 0;
+    #endregion
 
     private void Start()
     {

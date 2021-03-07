@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class DebugScreen : MonoBehaviour
 {
+    #region Data members
     World world;
     Text text;
     float frameRate;
@@ -12,6 +13,7 @@ public class DebugScreen : MonoBehaviour
 
     int halfWorldSizeInVoxels;
     int halfWorldSizeInChunks;
+    #endregion
 
     // Start is called before the first frame update
     void Start()
