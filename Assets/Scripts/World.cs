@@ -30,6 +30,8 @@ public class World : MonoBehaviour
     List<Chunk> chunksToUpdate = new List<Chunk>();
 
     public GameObject debugScreen;
+
+    private bool _inUI = false;
     #endregion
 
     private void Start()
@@ -129,7 +131,11 @@ public class World : MonoBehaviour
         while(modifications.Count > 0)
         {
             Queue<VoxelMod> queue = modifications.Dequeue();
-
+            if(queue == null)
+            {
+                // NULLREFERENCE FOR SOME REASON.
+                Debug.Log("testQueue");
+            }
             while (queue.Count > 0)
             {
                 VoxelMod vm = queue.Dequeue();
@@ -194,7 +200,7 @@ public class World : MonoBehaviour
                     activeChunks.Add(new ChunkCoord(x, z));
                 }
 
-                for(int i=0; i<previouslyActiveChunks.Count; i++)
+                for (int i = 0; i < previouslyActiveChunks.Count; i++)
                 {
                     if (previouslyActiveChunks[i].Equals(new ChunkCoord(x, z)))
                         previouslyActiveChunks.RemoveAt(i);
@@ -240,6 +246,15 @@ public class World : MonoBehaviour
         return blocktypes[GetVoxel(pos)].isTransparent;
     }
 
+    public bool inUI
+    {
+        get { return _inUI; }
+        set
+        {
+            _inUI = value;
+        }
+    }
+
     public byte GetVoxel(Vector3 pos)
     {
         int yPos = Mathf.FloorToInt(pos.y);
@@ -263,7 +278,7 @@ public class World : MonoBehaviour
             voxelValue = 3;
         else if (yPos < terrainHeight && yPos > terrainHeight - 4)
             voxelValue = 5;
-        else if (yPos >= terrainHeight)
+        else if (yPos > terrainHeight)
             return 0;
         else
             voxelValue = 2;
@@ -290,9 +305,10 @@ public class World : MonoBehaviour
         {
             if(Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.treeZoneScale) > biome.treeZoneTreshold)
             {
-                if(Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 100, biome.treePlacementScale) > biome.treePlacementThreshold)
+                if(Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.treePlacementScale) > biome.treePlacementThreshold)
                 {
-                    modifications.Enqueue(Structure.MakeTree(pos, biome.minTreeHeight, biome.maxTreeHeight));
+                    var test = Structure.MakeTree(pos, biome.minTreeHeight, biome.maxTreeHeight);
+                    modifications.Enqueue(test);
                 }
             }
         }

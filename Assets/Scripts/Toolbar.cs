@@ -1,31 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Toolbar : MonoBehaviour
 {
-    #region Data members
-    World world;
-    public Player player;
-
+    public UIItemSlot[] slots;
     public RectTransform highlight;
-    public ItemSlot[] itemSlots;
-
-    int slotIndex = 0;
-    #endregion
+    public Player player;
+    public int slotIndex = 0;
 
     private void Start()
     {
-        world = GameObject.Find("World").GetComponent<World>();
-
-        foreach (ItemSlot slot in itemSlots)
+        byte index = 1;
+        foreach(UIItemSlot s in slots)
         {
-            slot.icon.sprite = world.blocktypes[slot.itemID].icon;
-            slot.icon.enabled = true;
+            ItemStack stack = new ItemStack(index, Random.Range(2, 65));
+            ItemSlot slot = new ItemSlot(s, stack);
+            index++;
         }
-
-        player.selectedBlockIndex = itemSlots[slotIndex].itemID;
     }
 
     private void Update()
@@ -34,30 +26,64 @@ public class Toolbar : MonoBehaviour
 
         if(scroll != 0)
         {
-            if(scroll > 0)
+            if (scroll > 0)
             {
                 slotIndex--;
             }
             else slotIndex++;
 
-            if(slotIndex > itemSlots.Length - 1)
+            if(slotIndex > slots.Length - 1)
             {
                 slotIndex = 0;
             }
-            if(slotIndex < 0)
+            if (slotIndex < 0)
             {
-                slotIndex = itemSlots.Length - 1;
+                slotIndex = slots.Length - 1;
             }
 
-            highlight.position = itemSlots[slotIndex].icon.transform.position;
-            player.selectedBlockIndex = itemSlots[slotIndex].itemID;
+            highlight.position = slots[slotIndex].slotIcon.transform.position;
         }
-    }
-}
+        else
+        {
+            if (Input.GetButtonDown("Btn1"))
+            {
+                slotIndex = 0;
+            }
+            else if (Input.GetButtonDown("Btn2"))
+            {
+                slotIndex = 1;
+            }
+            else if (Input.GetButtonDown("Btn3"))
+            {
+                slotIndex = 2;
+            }
+            else if (Input.GetButtonDown("Btn4"))
+            {
+                slotIndex = 3;
+            }
+            else if (Input.GetButtonDown("Btn5"))
+            {
+                slotIndex = 4;
+            }
+            else if (Input.GetButtonDown("Btn6"))
+            {
+                slotIndex = 5;
+            }
+            else if (Input.GetButtonDown("Btn7"))
+            {
+                slotIndex = 6;
+            }
+            else if (Input.GetButtonDown("Btn8"))
+            {
+                slotIndex = 7;
+            }
+            else if (Input.GetButtonDown("Btn9"))
+            {
+                slotIndex = 8;
+            }
 
-[System.Serializable]
-public class ItemSlot
-{
-    public byte itemID;
-    public Image icon;
+            highlight.position = slots[slotIndex].slotIcon.transform.position;
+        }
+        
+    }
 }

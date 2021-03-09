@@ -88,9 +88,17 @@ public class Chunk
 
         while(modifications.Count > 0)
         {
-            VoxelMod vm = modifications.Dequeue();
-            Vector3 pos = vm.position -= position;
-            voxelMap[(int)pos.x, (int)pos.y, (int)pos.z] = vm.id;
+            lock(modifications)
+            {
+                VoxelMod vm = modifications.Dequeue();
+                if (vm == null) Debug.Log("VM ERROR");
+                Vector3 pos = vm.position -= position;
+                
+                lock(voxelMap)
+                {
+                    voxelMap[(int)pos.x, (int)pos.y, (int)pos.z] = vm.id;
+                }
+            }   
         }
 
         ClearMeshData();
@@ -102,7 +110,9 @@ public class Chunk
                 for (int z = 0; z < VoxelData.ChunkWidth; z++)
                 {
                     if(world.blocktypes[voxelMap[x, y, z]].isSolid)
+                    {
                         UpdateMeshData(new Vector3(x, y, z));
+                    }
                 }
             }
         }

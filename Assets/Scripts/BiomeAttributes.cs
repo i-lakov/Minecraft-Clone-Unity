@@ -14,8 +14,8 @@ public class BiomeAttributes : ScriptableObject
 
     [Header("Trees")]
     public float treeZoneScale = 1.3f;
-    [Range(0.1f, 1f)] // more or less forest
-    public float treeZoneTreshold = 0.6f;
+    [Range(0.1f, 1f)] 
+    public float treeZoneTreshold = 0.6f; // more or less forest
     public float treePlacementScale = 15f;
     [Range(0.1f, 1f)]
     public float treePlacementThreshold = 0.8f;

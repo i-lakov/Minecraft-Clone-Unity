@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
 
     public float walkSpeed = 3f;
     public float sprintSpeed = 6f;
-    public float jumpForce = 5f;
+    public float jumpForce = 4f;
     public float gravity = -9.8f;
 
     public float playerWidth = 0.15f;
@@ -26,13 +26,14 @@ public class Player : MonoBehaviour
     private Vector3 velocity;
     private float verticalMomentum = 0;
     private bool jumpRequest;
+    private float yRotation = 0;
 
     public Transform hightlightBlock;
     public Transform placeBlock;
     public float checkIncrement = 0.1f;
     public float reach = 8f;
 
-    public byte selectedBlockIndex = 1;
+    public Toolbar toolbar;
     #endregion
 
     private void Start()
@@ -45,18 +46,33 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        CalculateVelocity();
-        if (jumpRequest) Jump();
+        if(!world.inUI)
+        {
+            CalculateVelocity();
+            if (jumpRequest) Jump();
 
-        transform.Rotate(Vector3.up * mouseHorizontal);
-        cam.Rotate(Vector3.right * -mouseVertical);
-        transform.Translate(velocity, Space.World);
+            transform.Rotate(Vector3.up * mouseHorizontal);
+
+            yRotation += -mouseVertical;
+            yRotation = Mathf.Clamp(yRotation, -90, 90);
+            cam.transform.eulerAngles = new Vector3(yRotation, cam.transform.eulerAngles.y, cam.transform.eulerAngles.z);
+
+            transform.Translate(velocity, Space.World);
+        }
     }
 
     private void Update()
     {
-        GetPlayerInputs();
-        PlaceCursorBlocks();
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            world.inUI = !world.inUI;
+        }
+
+        if(!world.inUI)
+        {
+            GetPlayerInputs();
+            PlaceCursorBlocks();
+        }
     }
 
     void Jump()
@@ -134,7 +150,11 @@ public class Player : MonoBehaviour
             // Placing block.
             if (Input.GetMouseButtonDown(1))
             {
-                world.GetChunkFromVertor3(placeBlock.position).EditVoxel(placeBlock.position, selectedBlockIndex);
+                if(toolbar.slots[toolbar.slotIndex].HasItem)
+                {
+                    world.GetChunkFromVertor3(placeBlock.position).EditVoxel(placeBlock.position, toolbar.slots[toolbar.slotIndex].itemSlot.stack.id);
+                    toolbar.slots[toolbar.slotIndex].itemSlot.Take(1);
+                }
             }
         }
     }
