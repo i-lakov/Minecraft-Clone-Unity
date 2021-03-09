@@ -51,7 +51,14 @@ public class UIItemSlot : MonoBehaviour
         if (itemSlot != null && itemSlot.HasItem)
         {
             slotIcon.sprite = world.blocktypes[itemSlot.stack.id].icon;
-            slotAmount.text = itemSlot.stack.amount.ToString();
+            if(itemSlot.stack.amount > 1)
+            {
+                if (itemSlot.isCreative)
+                { 
+                    slotAmount.text = ""; 
+                }
+                else slotAmount.text = itemSlot.stack.amount.ToString();
+            }
             slotIcon.enabled = true;
             slotAmount.enabled = true;
         }
@@ -78,9 +85,14 @@ public class UIItemSlot : MonoBehaviour
 // "back-end" class
 public class ItemSlot
 {
+    #region Data members
     public ItemStack stack = null;
     private UIItemSlot uiItemSlot = null;
 
+    public bool isCreative;
+    #endregion
+
+    #region Constructors
     public ItemSlot(UIItemSlot _uiItemSlot)
     {
         stack = null;
@@ -94,6 +106,15 @@ public class ItemSlot
         uiItemSlot = _uiItemSlot;
         uiItemSlot.Link(this);
     }
+
+    public ItemSlot(UIItemSlot _uiItemSlot, ItemStack _stack, bool _isCreative)
+    {
+        stack = _stack;
+        uiItemSlot = _uiItemSlot;
+        isCreative = _isCreative;
+        uiItemSlot.Link(this);
+    }
+    #endregion
 
     public void LinkUISlot(UIItemSlot uiSlot)
     {
@@ -133,6 +154,19 @@ public class ItemSlot
             EmptySlot();
             return _amount;
         }
+    }
+
+    public ItemStack TakeAll()
+    {
+        ItemStack handOver = new ItemStack(stack.id, stack.amount);
+        EmptySlot();
+        return handOver;
+    }
+
+    public void InsertStack(ItemStack _stack)
+    {
+        stack = _stack;
+        uiItemSlot.UpdateSlot();
     }
 
     public bool HasItem

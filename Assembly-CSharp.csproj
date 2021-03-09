@@ -57,7 +57,9 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\BiomeAttributes.cs" />
      <Compile Include="Assets\Scripts\Chunk.cs" />
+     <Compile Include="Assets\Scripts\CreativeInventory.cs" />
      <Compile Include="Assets\Scripts\DebugScreen.cs" />
+     <Compile Include="Assets\Scripts\DragDropHandler.cs" />
      <Compile Include="Assets\Scripts\ItemStack.cs" />
      <Compile Include="Assets\Scripts\Noise.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
