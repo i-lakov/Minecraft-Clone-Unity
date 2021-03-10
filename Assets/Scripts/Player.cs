@@ -51,9 +51,9 @@ public class Player : MonoBehaviour
             CalculateVelocity();
             if (jumpRequest) Jump();
 
-            transform.Rotate(Vector3.up * mouseHorizontal);
+            transform.Rotate(Vector3.up * mouseHorizontal * world.settings.mouseSensitivity);
 
-            yRotation += -mouseVertical;
+            yRotation += (-mouseVertical * world.settings.mouseSensitivity);
             yRotation = Mathf.Clamp(yRotation, -90, 90);
             cam.transform.eulerAngles = new Vector3(yRotation, cam.transform.eulerAngles.y, cam.transform.eulerAngles.z);
 
