@@ -68,6 +68,11 @@ public class Player : MonoBehaviour
             world.inUI = !world.inUI;
         }
 
+        if(world.inUI && Input.GetKeyDown(KeyCode.Escape))
+        {
+            world.inUI = !world.inUI;
+        }
+
         if(!world.inUI)
         {
             GetPlayerInputs();
