@@ -33,7 +33,6 @@ public class DebugScreen : MonoBehaviour
         debugText += $"FPS: {frameRate}\n\n";
         debugText += $"Coordinates:\nX: {(Mathf.FloorToInt(world.player.transform.position.x) - halfWorldSizeInVoxels)} Y: {Mathf.FloorToInt(world.player.transform.position.y)} Z: {(Mathf.FloorToInt(world.player.transform.position.z) - halfWorldSizeInVoxels)}\n";
         debugText += $"Chunk: {(world.playerChunkCoord.x - halfWorldSizeInChunks)}, {(world.playerChunkCoord.z - halfWorldSizeInChunks)}\n\n";
-        debugText += $"Biome: {world.biome}\n\n";
         debugText += $"Toolbar slot: {toolbar.slotIndex}";
 
         text.text = debugText;

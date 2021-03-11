@@ -4,6 +4,34 @@ using UnityEngine;
 
 public static class Structure
 {
+    /// <summary>
+    /// Handles generation of big objects like trees, cacti, etc.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="position"></param>
+    /// <param name="minTrunkHeight"></param>
+    /// <param name="maxTrunkHeight"></param>
+    /// <returns></returns>
+    public static Queue<VoxelMod> GenerateBigFlora(int index, Vector3 position, int minTrunkHeight, int maxTrunkHeight)
+    {
+        switch(index)
+        {
+            case 0:
+                return MakeTree(position, minTrunkHeight, maxTrunkHeight);
+            case 1:
+                return MakeCactus(position, minTrunkHeight, maxTrunkHeight);
+            default:
+                return new Queue<VoxelMod>();
+        }
+    }
+
+    /// <summary>
+    /// Handles tree generation.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="minTrunkHeight"></param>
+    /// <param name="maxTrunkHeight"></param>
+    /// <returns></returns>
     public static Queue<VoxelMod> MakeTree(Vector3 position, int minTrunkHeight, int maxTrunkHeight)
     {
         Queue<VoxelMod> q = new Queue<VoxelMod>();
@@ -61,6 +89,37 @@ public static class Structure
         {
             q.Enqueue(new VoxelMod(new Vector3(position.x, position.y + i, position.z), 6));
         }
+
+        return q;
+    }
+
+    /// <summary>
+    /// Handles cacti generation.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="minTrunkHeight"></param>
+    /// <param name="maxTrunkHeight"></param>
+    /// <returns></returns>
+    public static Queue<VoxelMod> MakeCactus(Vector3 position, int minTrunkHeight, int maxTrunkHeight)
+    {
+        Queue<VoxelMod> q = new Queue<VoxelMod>();
+
+        int height = (int)(maxTrunkHeight * Noise.Get2DPerlin(new Vector2(position.x, position.z), 1530f, 2f));
+
+        // No cactus should be smaller than the minimum.
+        if (height < minTrunkHeight)
+        {
+            height = minTrunkHeight;
+        }
+
+        // CACTUS BODY
+        for (int i = 1; i <= height; i++)
+        {
+            q.Enqueue(new VoxelMod(new Vector3(position.x, position.y + i, position.z), 12));
+        }
+
+        // CACTUS TOP
+        q.Enqueue(new VoxelMod(new Vector3(position.x, position.y + height + 1, position.z), 13));
 
         return q;
     }

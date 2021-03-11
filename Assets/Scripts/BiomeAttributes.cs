@@ -6,22 +6,30 @@ using UnityEngine;
 public class BiomeAttributes : ScriptableObject
 {
     #region Data members
+    [Header("Biome settings")]
     public string biomeName;
+    public int offset;
+    public float scale;
 
-    public int solidGroundHeight; // always solid below this level
     public int terrainHeight; // how tall the terrain generations are
     public float terrainScale;
 
-    [Header("Trees")]
-    public float treeZoneScale = 1.3f;
-    [Range(0.1f, 1f)] 
-    public float treeZoneTreshold = 0.6f; // more or less forest
-    public float treePlacementScale = 15f;
-    [Range(0.1f, 1f)]
-    public float treePlacementThreshold = 0.8f;
+    public byte surfaceBlock;
+    public byte subSurfaceBlock;
 
-    public int maxTreeHeight = 12;
-    public int minTreeHeight = 5;
+    [Header("Big Flora")]
+    public int majorFloraIndex;
+    public float bigFloraZoneScale = 1.3f;
+    [Range(0.1f, 1f)] 
+    public float bigFloraZoneTreshold = 0.6f; // more or less forest
+    public float bigFloraPlacementScale = 15f;
+    [Range(0.1f, 1f)]
+    public float bigFloraPlacementThreshold = 0.8f;
+
+    public bool placeBigFlora = true;
+
+    public int maxHeight = 12;
+    public int minHeight = 5;
 
     public Lode[] lodes;
     #endregion

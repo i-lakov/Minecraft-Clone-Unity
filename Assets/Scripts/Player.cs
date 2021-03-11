@@ -12,9 +12,9 @@ public class Player : MonoBehaviour
     public bool isGrounded;
     public bool isSprinting;
 
-    public float walkSpeed = 3f;
-    public float sprintSpeed = 6f;
-    public float jumpForce = 4f;
+    public float walkSpeed = 4f;
+    public float sprintSpeed = 8f;
+    public float jumpForce = 5f;
     public float gravity = -9.8f;
 
     public float playerWidth = 0.15f;
