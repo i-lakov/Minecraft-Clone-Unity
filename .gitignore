@@ -1,9 +1,6 @@
-# Binaries
-
 Library/
 Logs/
 Temp/
-
-# Visual studio
+Build/
 
 .vs/
