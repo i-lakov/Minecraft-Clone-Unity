@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 
     public bool isGrounded;
     public bool isSprinting;
+    public bool isFlying = false;
 
     public float walkSpeed = 4f;
     public float sprintSpeed = 8f;
@@ -26,12 +27,16 @@ public class Player : MonoBehaviour
     private Vector3 velocity;
     private float verticalMomentum = 0;
     private bool jumpRequest;
+    private bool flyRequest;
     private float yRotation = 0;
 
     public Transform hightlightBlock;
     public Transform placeBlock;
     public float checkIncrement = 0.1f;
     public float reach = 8f;
+
+    private float time = 0f;
+    private int pressed = 0;
 
     public Toolbar toolbar;
     #endregion
@@ -46,10 +51,11 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(!world.inUI)
-        {
+        if (!world.inUI)
+        { 
             CalculateVelocity();
             if (jumpRequest) Jump();
+            if (flyRequest) Fly();
 
             transform.Rotate(Vector3.up * mouseHorizontal * world.settings.mouseSensitivity);
 
@@ -58,22 +64,56 @@ public class Player : MonoBehaviour
             cam.transform.eulerAngles = new Vector3(yRotation, cam.transform.eulerAngles.y, cam.transform.eulerAngles.z);
 
             transform.Translate(velocity, Space.World);
+
+            if (isGrounded)
+            {
+                gravity = -9.8f;
+                isFlying = false;
+            }
         }
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if (isFlying)
+        {
+            if (Input.GetButtonDown("Jump"))
+            {
+                pressed++;
+                if (pressed == 1) time = Time.time;
+            }
+            if (pressed > 1 && Time.time - time < 0.3f)
+            {
+                pressed = 0;
+                gravity = -9.8f;
+                return;
+            }
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+                verticalMomentum = 0f;
+                transform.position += Vector3.up * walkSpeed * Time.deltaTime;
+            }
+            else if (Input.GetKey(KeyCode.LeftControl))
+            {
+                velocity.y = (Vector3.down * walkSpeed).y;
+                velocity.y = CheckDownSpeed(velocity.y);
+
+                transform.position += velocity * Time.deltaTime;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
         {
             world.inUI = !world.inUI;
         }
 
-        if(world.inUI && Input.GetKeyDown(KeyCode.Escape))
+        if (world.inUI && Input.GetKeyDown(KeyCode.Escape))
         {
             world.inUI = !world.inUI;
         }
 
-        if(!world.inUI)
+        if (!world.inUI)
         {
             GetPlayerInputs();
             PlaceCursorBlocks();
@@ -87,11 +127,21 @@ public class Player : MonoBehaviour
         jumpRequest = false;
     }
 
+    void Fly()
+    {
+        gravity = 0;
+        isGrounded = false;
+        flyRequest = false;
+        isFlying = true;
+    }
+
     private void CalculateVelocity()
     {
         // Affect vertical momentum w/ gravity.
         if (verticalMomentum > gravity)
+        {
             verticalMomentum += Time.fixedDeltaTime * gravity;
+        }
 
         // Check if sprinting.
         if (isSprinting)
@@ -102,7 +152,7 @@ public class Player : MonoBehaviour
         // Apply falling & jumping.
         velocity += Vector3.up * verticalMomentum * Time.fixedDeltaTime;
 
-        if((velocity.z > 0 && front) || (velocity.z < 0 && back))
+        if ((velocity.z > 0 && front) || (velocity.z < 0 && back))
         {
             velocity.z = 0;
         }
@@ -125,7 +175,7 @@ public class Player : MonoBehaviour
 
     private void GetPlayerInputs()
     {
-        if(Input.GetKeyDown(KeyCode.End))
+        if (Input.GetKeyDown(KeyCode.End))
         {
             Application.Quit();
         }
@@ -135,24 +185,31 @@ public class Player : MonoBehaviour
         mouseHorizontal = Input.GetAxis("Mouse X");
         mouseVertical = Input.GetAxis("Mouse Y");
 
-        if(Input.GetButtonDown("Sprint"))
+        if (Input.GetButtonDown("Sprint"))
         {
             isSprinting = true;
         }
-        if(Input.GetButtonUp("Sprint"))
+        if (Input.GetButtonUp("Sprint"))
         {
             isSprinting = false;
         }
 
-        if(isGrounded && Input.GetButtonDown("Jump"))
+        // Jumping.
+        if (isGrounded && Input.GetButtonDown("Jump"))
         {
+            time = Time.time;
             jumpRequest = true;
         }
+        // Flying.
+        if (!isGrounded && Input.GetButtonDown("Jump") && Time.time - time < 0.3f)
+        {
+            flyRequest = true;
+        }
 
-        if(hightlightBlock.gameObject.activeSelf)
+        if (hightlightBlock.gameObject.activeSelf)
         {
             // Destroying block.
-            if(Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 world.GetChunkFromVertor3(hightlightBlock.position).EditVoxel(hightlightBlock.position, 0);
             }
@@ -160,7 +217,7 @@ public class Player : MonoBehaviour
             // Placing block.
             if (Input.GetMouseButtonDown(1))
             {
-                if(toolbar.slots[toolbar.slotIndex].HasItem)
+                if (toolbar.slots[toolbar.slotIndex].HasItem)
                 {
                     world.GetChunkFromVertor3(placeBlock.position).EditVoxel(placeBlock.position, toolbar.slots[toolbar.slotIndex].itemSlot.stack.id);
                     toolbar.slots[toolbar.slotIndex].itemSlot.Take(1);
@@ -174,11 +231,11 @@ public class Player : MonoBehaviour
         float step = checkIncrement;
         Vector3 lastPos = new Vector3();
 
-        while(step < reach)
+        while (step < reach)
         {
             Vector3 pos = cam.position + (cam.forward * step);
 
-            if(world.CheckForVoxel(pos))
+            if (world.CheckForVoxel(pos))
             {
                 hightlightBlock.position = new Vector3(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
                 placeBlock.position = lastPos;
@@ -197,10 +254,10 @@ public class Player : MonoBehaviour
 
     private float CheckDownSpeed(float downSpeed)
     {
-        if(world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + downSpeed, transform.position.z - playerWidth)) ||
+        if (world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + downSpeed, transform.position.z - playerWidth)) ||
            world.CheckForVoxel(new Vector3(transform.position.x + playerWidth, transform.position.y + downSpeed, transform.position.z - playerWidth)) ||
            world.CheckForVoxel(new Vector3(transform.position.x + playerWidth, transform.position.y + downSpeed, transform.position.z + playerWidth)) ||
-           world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + downSpeed, transform.position.z + playerWidth)) )
+           world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + downSpeed, transform.position.z + playerWidth)))
         {
             isGrounded = true;
             return 0;
@@ -217,7 +274,7 @@ public class Player : MonoBehaviour
         if (world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + 2f + upSpeed, transform.position.z - playerWidth)) ||
             world.CheckForVoxel(new Vector3(transform.position.x + playerWidth, transform.position.y + 2f + upSpeed, transform.position.z - playerWidth)) ||
             world.CheckForVoxel(new Vector3(transform.position.x + playerWidth, transform.position.y + 2f + upSpeed, transform.position.z + playerWidth)) ||
-            world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + 2f + upSpeed, transform.position.z + playerWidth)) )
+            world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + 2f + upSpeed, transform.position.z + playerWidth)))
         {
             return 0;
         }
@@ -232,7 +289,7 @@ public class Player : MonoBehaviour
         get
         {
             if (world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y, transform.position.z + playerWidth)) ||
-                world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z + playerWidth)) )
+                world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z + playerWidth)))
                 return true;
 
             else return false;
@@ -244,7 +301,7 @@ public class Player : MonoBehaviour
         get
         {
             if (world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y, transform.position.z - playerWidth)) ||
-                world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z - playerWidth)) )
+                world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z - playerWidth)))
                 return true;
 
             else return false;
@@ -256,7 +313,7 @@ public class Player : MonoBehaviour
         get
         {
             if (world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y, transform.position.z)) ||
-                world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + 1f, transform.position.z)) )
+                world.CheckForVoxel(new Vector3(transform.position.x - playerWidth, transform.position.y + 1f, transform.position.z)))
                 return true;
 
             else return false;
@@ -268,7 +325,7 @@ public class Player : MonoBehaviour
         get
         {
             if (world.CheckForVoxel(new Vector3(transform.position.x + playerWidth, transform.position.y, transform.position.z)) ||
-                world.CheckForVoxel(new Vector3(transform.position.x + playerWidth, transform.position.y + 1f, transform.position.z)) )
+                world.CheckForVoxel(new Vector3(transform.position.x + playerWidth, transform.position.y + 1f, transform.position.z)))
                 return true;
 
             else return false;

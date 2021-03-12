@@ -1543,7 +1543,7 @@ MonoBehaviour:
     enableThreading: 1
     enableAnimatedChunkLoading: 1
     mouseSensitivity: 3.5
-    seed: 4919431
+    seed: 21312414
   biomes:
   - {fileID: 11400000, guid: 870c0d2ad264464488fe3d0818fb00a3, type: 2}
   - {fileID: 11400000, guid: 8048a597346716c49a0ef0a0f06e7339, type: 2}
