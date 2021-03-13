@@ -21,10 +21,10 @@ MonoBehaviour:
   subSurfaceBlock: 5
   majorFloraIndex: 0
   bigFloraZoneScale: 1.3
-  bigFloraZoneTreshold: 0.327
-  bigFloraPlacementScale: 4.12
+  bigFloraZoneTreshold: 0.482
+  bigFloraPlacementScale: 7.39
   bigFloraPlacementThreshold: 0.73
-  placeBigFlora: 0
+  placeBigFlora: 1
   maxHeight: 12
   minHeight: 5
   lodes:

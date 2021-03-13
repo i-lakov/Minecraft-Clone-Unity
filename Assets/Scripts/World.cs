@@ -42,6 +42,10 @@ public class World : MonoBehaviour
     public GameObject creativeInventoryWindow;
     public GameObject cursorSlot;
 
+    public GameObject loadingScreenWindow;
+    private float loadingScreenTimer = 8f; // Loading screen will be drawn for 8 seconds each time the game starts.
+    private bool inLoadingScreen = true;
+
     private bool _inUI = false;
 
     Thread chunkUpdateThread;
@@ -50,6 +54,8 @@ public class World : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log($"Generating world using seed <{VoxelData.seed}>.");
+
         //string jsonExport = JsonUtility.ToJson(settings);
         //Debug.Log(jsonExport);
         //File.WriteAllText(Application.dataPath + "/settings.cfg", jsonExport);
@@ -57,7 +63,7 @@ public class World : MonoBehaviour
         string jsonImport = File.ReadAllText(Application.dataPath + "/settings.cfg");
         settings = JsonUtility.FromJson<Settings>(jsonImport);
 
-        Random.InitState(settings.seed);
+        Random.InitState(VoxelData.seed);
 
         Shader.SetGlobalFloat("MinGlobalLightLevel", VoxelData.minLightLevel);
         Shader.SetGlobalFloat("MaxGlobalLightLevel", VoxelData.maxLightLevel);
@@ -77,6 +83,16 @@ public class World : MonoBehaviour
 
     private void Update()
     {
+        if(inLoadingScreen)
+        {
+            loadingScreenTimer -= Time.deltaTime;
+            if (loadingScreenTimer < 0)
+            {
+                loadingScreenWindow.SetActive(false);
+                inLoadingScreen = false;
+            }
+        }
+        
         playerChunkCoord = GetChunkCoordFromVector3(player.position);
 
         // Updating the chunks when the player moves to new chunk.
@@ -532,17 +548,14 @@ public class VoxelMod
 public class Settings
 {
     [Header("Game data")]
-    public string version;
+    public string version = "1.23";
 
     [Header("Performance")]
-    public int viewDistance;
-    public bool enableThreading;
-    public bool enableAnimatedChunkLoading;
+    public int viewDistance = 8;
+    public bool enableThreading = true;
+    public bool enableAnimatedChunkLoading = true;
 
     [Header("Controls")]
     [Range(1f, 20f)]
-    public float mouseSensitivity;
-
-    [Header("World generation")]
-    public int seed;
+    public float mouseSensitivity = 2f;
 }

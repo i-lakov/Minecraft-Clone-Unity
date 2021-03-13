@@ -11,6 +11,7 @@ public class DebugScreen : MonoBehaviour
     float frameRate;
     float timer;
     public Toolbar toolbar;
+    public Settings settings;
 
     int halfWorldSizeInVoxels;
     int halfWorldSizeInChunks;
@@ -29,11 +30,14 @@ public class DebugScreen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        string debugText = "VankoCraft Beta Debug Screen (F3)\n";
+        string debugText = $"Vankocraft Beta v.{settings.version} Debug Screen (F3)\n";
         debugText += $"FPS: {frameRate}\n\n";
         debugText += $"Coordinates:\nX: {(Mathf.FloorToInt(world.player.transform.position.x) - halfWorldSizeInVoxels)} Y: {Mathf.FloorToInt(world.player.transform.position.y)} Z: {(Mathf.FloorToInt(world.player.transform.position.z) - halfWorldSizeInVoxels)}\n";
         debugText += $"Chunk: {(world.playerChunkCoord.x - halfWorldSizeInChunks)}, {(world.playerChunkCoord.z - halfWorldSizeInChunks)}\n\n";
-        debugText += $"Toolbar slot: {toolbar.slotIndex}";
+        debugText += $"Toolbar slot: {toolbar.slotIndex}\n\n";
+        debugText += $"View distance: {settings.viewDistance}\n";
+        debugText += $"Sensitivity: {settings.mouseSensitivity}";
+
 
         text.text = debugText;
 

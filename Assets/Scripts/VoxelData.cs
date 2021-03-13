@@ -13,6 +13,8 @@ public static class VoxelData
     public static float minLightLevel = 0.25f;
     public static float maxLightLevel = 0.8f;
     public static float lightFalloff  = 0.08f;
+
+    public static int seed;
     #endregion
 
     public static int WorldSizeInVoxels
