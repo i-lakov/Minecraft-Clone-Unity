@@ -48,6 +48,8 @@ public class World : MonoBehaviour
 
     private bool _inUI = false;
 
+    public Clouds clouds;
+
     Thread chunkUpdateThread;
     public object chunkUpdateThreadLock = new object();
     #endregion
@@ -76,7 +78,7 @@ public class World : MonoBehaviour
 
         SetGlobalLightValue();
 
-        spawnPosition = new Vector3((VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f, VoxelData.ChunkHeight - 50f, (VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f);
+        spawnPosition = new Vector3(VoxelData.WorldCenter, VoxelData.ChunkHeight - 50f, VoxelData.WorldCenter);
         GenerateWorld();
         playerLastChunkCoord = GetChunkCoordFromVector3(player.position);
     }
@@ -219,11 +221,6 @@ public class World : MonoBehaviour
         while(modifications.Count > 0)
         {
             Queue<VoxelMod> queue = modifications.Dequeue();
-            if(queue == null)
-            {
-                // NULLREFERENCE FOR SOME REASON.
-                Debug.Log("testQueue");
-            }
             while (queue.Count > 0)
             {
                 VoxelMod vm = queue.Dequeue();
@@ -260,6 +257,8 @@ public class World : MonoBehaviour
 
     void CheckViewDistance()
     {
+        clouds.UpdateClouds();
+
         ChunkCoord coord = GetChunkCoordFromVector3(player.position);
         playerLastChunkCoord = playerChunkCoord;
 

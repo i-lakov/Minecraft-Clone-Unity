@@ -8,6 +8,8 @@ public static class VoxelData
     public static readonly int ChunkWidth  = 16;
     public static readonly int ChunkHeight = 128;
     public static readonly int WorldSizeInChunks = 100;
+    
+    public static readonly int TextureAtlasSizeInBlocks = 16;
 
     // LIGHTING RELATED VALUES
     public static float minLightLevel = 0.25f;
@@ -17,16 +19,22 @@ public static class VoxelData
     public static int seed;
     #endregion
 
+    #region Properties
+    public static int WorldCenter
+    {
+        get { return (WorldSizeInChunks * ChunkWidth) / 2; }
+    }
+
     public static int WorldSizeInVoxels
     {
         get { return WorldSizeInChunks * ChunkWidth; }
     }
 
-    public static readonly int TextureAtlasSizeInBlocks = 16;
     public static float NormalizedBlockTextureSize
     {
         get { return 1f / (float)TextureAtlasSizeInBlocks; }
     }
+    #endregion
 
     public static readonly Vector3[] voxelVerts = new Vector3[8]
     {
