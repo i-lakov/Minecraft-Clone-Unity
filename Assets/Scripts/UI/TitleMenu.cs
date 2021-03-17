@@ -23,6 +23,7 @@ public class TitleMenu : MonoBehaviour
     public TextMeshProUGUI mouseSliderText;
     public Toggle threadingToggle;
     public Toggle chunkAnimationToggle;
+    public TMP_Dropdown clouds;
 
     private void Awake()
     {
@@ -60,6 +61,8 @@ public class TitleMenu : MonoBehaviour
         mouseSlider.value = settings.mouseSensitivity;
         UpdateMouseSlider();
 
+        clouds.value = (int)settings.cloudStyle;
+
         threadingToggle.isOn = settings.enableThreading;
         chunkAnimationToggle.isOn = settings.enableAnimatedChunkLoading;
 
@@ -73,6 +76,7 @@ public class TitleMenu : MonoBehaviour
         settings.mouseSensitivity = mouseSlider.value;
         settings.enableThreading = threadingToggle.isOn;
         settings.enableAnimatedChunkLoading = chunkAnimationToggle.isOn;
+        settings.cloudStyle = (CloudStyle)clouds.value;
 
         string jsonExport = JsonUtility.ToJson(settings);
         Debug.Log(jsonExport);
