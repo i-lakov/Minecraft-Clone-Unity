@@ -980,6 +980,7 @@ MonoBehaviour:
     version: 1.23
     viewDistance: 8
     enableThreading: 1
+    cloudStyle: 1
     enableAnimatedChunkLoading: 1
     mouseSensitivity: 2
 --- !u!1001 &943631295
@@ -1751,13 +1752,14 @@ MonoBehaviour:
     version: 1.18
     viewDistance: 4
     enableThreading: 1
+    cloudStyle: 1
     enableAnimatedChunkLoading: 1
     mouseSensitivity: 3.5
   biomes:
   - {fileID: 11400000, guid: 870c0d2ad264464488fe3d0818fb00a3, type: 2}
   - {fileID: 11400000, guid: 8048a597346716c49a0ef0a0f06e7339, type: 2}
   - {fileID: 11400000, guid: 16afaccce9b165545be37744abff0ba6, type: 2}
-  globalLightLevel: 0.586
+  globalLightLevel: 0.394
   day: {r: 0, g: 0.87633324, b: 1, a: 0}
   night: {r: 0, g: 0.003921569, b: 0.3019608, a: 0}
   player: {fileID: 1309378894}
@@ -2801,6 +2803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cloudHeight: 100
+  cloudDepth: 4
   cloudPattern: {fileID: 2800000, guid: a6327b62a2989bd4b96d1ccdf703f499, type: 3}
   cloudMaterial: {fileID: 2100000, guid: 9ae77d6e6da1b234f8d1e7431d2c7471, type: 2}
   world: {fileID: 1199084088}

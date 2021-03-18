@@ -15,6 +15,8 @@ public class DebugScreen : MonoBehaviour
 
     int halfWorldSizeInVoxels;
     int halfWorldSizeInChunks;
+
+    string timeFormat = "00";
     #endregion
 
     // Start is called before the first frame update
@@ -33,7 +35,8 @@ public class DebugScreen : MonoBehaviour
         string debugText = $"Vankocraft Beta v.{settings.version} Debug Screen (F3)\n";
         debugText += $"FPS: {frameRate}\n\n";
         debugText += $"Coordinates:\nX: {(Mathf.FloorToInt(world.player.transform.position.x) - halfWorldSizeInVoxels)} Y: {Mathf.FloorToInt(world.player.transform.position.y)} Z: {(Mathf.FloorToInt(world.player.transform.position.z) - halfWorldSizeInVoxels)}\n";
-        debugText += $"Chunk: {(world.playerChunkCoord.x - halfWorldSizeInChunks)}, {(world.playerChunkCoord.z - halfWorldSizeInChunks)}\n\n";
+        debugText += $"Chunk: {(world.playerChunkCoord.x - halfWorldSizeInChunks)}, {(world.playerChunkCoord.z - halfWorldSizeInChunks)}\n";
+        debugText += $"Current time: {world.timeHour}:{world.timeMin.ToString(timeFormat)}\n\n";
         debugText += $"Toolbar slot: {toolbar.slotIndex}\n\n";
         debugText += $"View distance: {settings.viewDistance}\n";
         debugText += $"Sensitivity: {settings.mouseSensitivity}";

@@ -52,15 +52,15 @@ public class World : MonoBehaviour
 
     Thread chunkUpdateThread;
     public object chunkUpdateThreadLock = new object();
+
+    public int timeHour;
+    public float timeMin;
+    public float timeSpeedModifier = 1;
     #endregion
 
     private void Start()
     {
         Debug.Log($"Generating world using seed <{VoxelData.seed}>.");
-
-        //string jsonExport = JsonUtility.ToJson(settings);
-        //Debug.Log(jsonExport);
-        //File.WriteAllText(Application.dataPath + "/settings.cfg", jsonExport);
 
         string jsonImport = File.ReadAllText(Application.dataPath + "/settings.cfg");
         settings = JsonUtility.FromJson<Settings>(jsonImport);
@@ -76,6 +76,11 @@ public class World : MonoBehaviour
             chunkUpdateThread.Start();
         }
 
+        // New world time begins at noon.
+        timeHour = 12;
+        timeMin = 00;
+        globalLightLevel = 1f;
+
         SetGlobalLightValue();
 
         spawnPosition = new Vector3(VoxelData.WorldCenter, VoxelData.ChunkHeight - 50f, VoxelData.WorldCenter);
@@ -85,7 +90,11 @@ public class World : MonoBehaviour
 
     private void Update()
     {
-        if(inLoadingScreen)
+        // Update global light level, depending on what time it is.
+        TimeCycle();
+        SetGlobalLightValue();
+
+        if (inLoadingScreen)
         {
             loadingScreenTimer -= Time.deltaTime;
             if (loadingScreenTimer < 0)
@@ -135,6 +144,66 @@ public class World : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the time keeping in 24 hour format.
+    /// </summary>
+    private void TimeCycle()
+    {
+        if(timeMin < 59)
+        {
+            timeMin += 1 * Time.deltaTime * timeSpeedModifier;
+        }
+        else if(timeMin >= 59 && timeHour < 23)
+        {
+            timeMin = 0;
+            timeHour++;
+            AdjustGlobalLightLevel(timeHour);
+        }
+        else if(timeMin >= 59 && timeHour >= 23)
+        {
+            timeMin = 0;
+            timeHour = 0;
+            AdjustGlobalLightLevel(timeHour);
+        }
+    }
+
+    /// <summary>
+    /// Adjusts the global light level, based on current time.
+    /// </summary>
+    private void AdjustGlobalLightLevel(int _timeHour)
+    {
+        switch(_timeHour)
+        {
+            case 23: break;
+            case 0: break;
+            case 1: break;
+            case 2: break;
+            case 3: break;
+            case 4: break;
+            case 5: globalLightLevel += 0.125f; break;
+            case 6: globalLightLevel += 0.125f; break;
+            case 7: globalLightLevel += 0.125f; break;
+            case 8: globalLightLevel += 0.125f; break;
+            case 9: globalLightLevel += 0.125f; break;
+            case 10: globalLightLevel += 0.125f; break;
+            case 11: globalLightLevel += 0.125f; break;
+            case 12: globalLightLevel += 0.125f; break;
+            case 13: break;
+            case 14: break;
+            case 15: globalLightLevel -= 0.125f; break;
+            case 16: globalLightLevel -= 0.125f; break;
+            case 17: globalLightLevel -= 0.125f; break;
+            case 18: globalLightLevel -= 0.125f; break;
+            case 19: globalLightLevel -= 0.125f; break;
+            case 20: globalLightLevel -= 0.125f; break;
+            case 21: globalLightLevel -= 0.125f; break;
+            case 22: globalLightLevel -= 0.125f; break;
+        }
+    }
+
+    /// <summary>
+    /// Sets a certain value as the global light level.
+    /// </summary>
     public void SetGlobalLightValue()
     {
         Shader.SetGlobalFloat("GlobalLightLevel", globalLightLevel);
