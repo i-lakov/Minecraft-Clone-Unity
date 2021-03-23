@@ -60,12 +60,15 @@
      <Compile Include="Assets\Scripts\ChunkLoadAnimation.cs" />
      <Compile Include="Assets\Scripts\Clouds.cs" />
      <Compile Include="Assets\Scripts\CreativeInventory.cs" />
+     <Compile Include="Assets\Scripts\Data\ChunkData.cs" />
+     <Compile Include="Assets\Scripts\Data\WorldData.cs" />
      <Compile Include="Assets\Scripts\DebugScreen.cs" />
      <Compile Include="Assets\Scripts\DragDropHandler.cs" />
      <Compile Include="Assets\Scripts\ItemStack.cs" />
      <Compile Include="Assets\Scripts\Noise.cs" />
      <Compile Include="Assets\Scripts\Pigman.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
+     <Compile Include="Assets\Scripts\SaveSys.cs" />
      <Compile Include="Assets\Scripts\Structure.cs" />
      <Compile Include="Assets\Scripts\Toolbar.cs" />
      <Compile Include="Assets\Scripts\UI\TitleMenu.cs" />
